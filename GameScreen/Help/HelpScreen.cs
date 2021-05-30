@@ -6,16 +6,20 @@ public class HelpScreen : IState
 {
     public string Tag { get; }
     public IStateView View { get; }
-    public IState NextState { get; }
-    public IList<IState> ValidTransitions { get; set; }
+    public string NextState { get; }
+    public IList<string> ValidTransitions { get; set; }
     public void OnEnter() { }
     public void OnExit() { }
     public bool OnUpdate() { return false; }
 
     private HelpScreenView _View;
+    private GameScreenTag _ScreenTags = new GameScreenTag();
+
     public HelpScreen(HelpScreenView view)
     {
         View = view;
         _View = (HelpScreenView)View;
+
+        Tag = _ScreenTags.Help;
     }
 }

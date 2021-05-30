@@ -16,9 +16,17 @@ public class Main : MonoBehaviour
     private IStateDirector[] _Directors = new IStateDirector[1];
     private GameScreenDirector _GameStateDirector;
 
+    private Dood _Dood = Dood.Instance;
+
     void Awake()
     {
         BuildGameScreens();
+    }
+
+    void Start()
+    {
+        Dood.IsLogging = true;
+        _GameStateDirector.IsActive = true;
     }
 
     void Update()
@@ -36,10 +44,10 @@ public class Main : MonoBehaviour
         HelpScreen helpScreen          = new HelpScreen(_HelpScreenView);
         CreditsScreen creditsScreen    = new CreditsScreen(_CreditsView);
 
-        startScreen.ValidTransitions   = new IState[] { gameScreen, helpScreen, creditsScreen };
-        gameScreen.ValidTransitions    = new IState[] { startScreen, helpScreen, creditsScreen };
-        helpScreen.ValidTransitions    = new IState[] { startScreen, gameScreen };
-        creditsScreen.ValidTransitions = new IState[] { startScreen, gameScreen };
+        startScreen.ValidTransitions   = new string[] { gameScreen.Tag, helpScreen.Tag, creditsScreen.Tag };
+        gameScreen.ValidTransitions    = new string[] { startScreen.Tag, helpScreen.Tag, creditsScreen.Tag };
+        helpScreen.ValidTransitions    = new string[] { startScreen.Tag, gameScreen.Tag };
+        creditsScreen.ValidTransitions = new string[] { startScreen.Tag, gameScreen.Tag };
 
         var gamestates                 = new IState[] { startScreen , gameScreen , helpScreen, creditsScreen };
 
