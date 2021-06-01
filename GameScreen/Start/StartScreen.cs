@@ -25,15 +25,12 @@ public class StartScreen : IState
         return _Ready; 
     }
 
+    private GameData _GameData = GameData.Instance;
     private GameScreenTag _ScreenTags = new GameScreenTag();
-
     private StartScreenView _View;
-
     private EventManager _EventManager = EventManager.Instance;
     private StartScreenEvent _Event = new StartScreenEvent();
-
     private Dood _Dood = Dood.Instance;
-
     private bool _Ready = false; //When true transitions
 
     public StartScreen(StartScreenView view)
@@ -55,7 +52,7 @@ public class StartScreen : IState
     private void NewGame(string name, object data)
     {
         NextState = _ScreenTags.Game;
-
+        _GameData.IsNewGame = true;
         _Ready = true;
     }
 

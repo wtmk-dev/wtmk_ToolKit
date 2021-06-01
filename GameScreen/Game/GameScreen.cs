@@ -8,16 +8,23 @@ public partial class GameScreen : IState
     public IStateView View { get; }
     public string NextState { get; }
     public IList<string> ValidTransitions { get; set; }
+
     public void OnEnter() 
     {
-        if(_GameData.IsNewGame)
-        {
-            NewGame(); // implement in your own partial
-        }
+        Debug.Log("Game Screen Enter");
+        StateEnter(); // implement in your own partial
     }
-    public void OnExit() { }
-    public bool OnUpdate() { return false; }
 
+    public void OnExit() 
+    {
+        StateExit(); // implement in your own partial
+    }
+
+    public bool OnUpdate() 
+    { 
+        return StateUpdate(); 
+    }
+    
     private GameScreenView _View;
     private GameScreenTag _ScreenTags = new GameScreenTag();
     private GameData _GameData = GameData.Instance;
