@@ -6,21 +6,21 @@ public class StartScreen : IState
 {
     public string Tag { get; }
     public IStateView View { get; }
-    public string NextState { get; private set; }
+    public virtual string NextState { get; protected set; }
     public IList<string> ValidTransitions { get; set; }
     
-    public void OnEnter() 
+    public virtual void OnEnter() 
     {
         _Ready = false;
         _View.SetActive(true);
     }
     
-    public void OnExit() 
+    public virtual void OnExit() 
     {
         _View.SetActive(false);
     }
 
-    public bool OnUpdate() 
+    public virtual bool OnUpdate() 
     {
         return _Ready; 
     }
@@ -31,7 +31,7 @@ public class StartScreen : IState
     private EventManager _EventManager = EventManager.Instance;
     private StartScreenEvent _Event = new StartScreenEvent();
     private Dood _Dood = Dood.Instance;
-    private bool _Ready = false; //When true transitions
+    protected bool _Ready = false; //When true transitions
 
     public StartScreen(StartScreenView view)
     {
@@ -43,7 +43,7 @@ public class StartScreen : IState
         Tag = _ScreenTags.Start;
     }
 
-    private void RegisterCallBacks()
+    protected virtual void RegisterCallBacks()
     {
         _EventManager.RegisterEventCallback(_Event.ShowHelpScreen, TransitionToHelp);
         _EventManager.RegisterEventCallback(_Event.NewGame, NewGame);

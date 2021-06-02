@@ -9,6 +9,8 @@ public class StartScreenView : MonoBehaviour, IStateView
     private Button _Start;
     private StartScreenEvent _Event = new StartScreenEvent();
 
+    public Button bStart { get; private set; }
+
     public void SetActive(bool isActive)
     {
         gameObject.SetActive(isActive);
@@ -18,6 +20,7 @@ public class StartScreenView : MonoBehaviour, IStateView
 
     void Awake()
     {
+        bStart = _Start;
         _Start.onClick.AddListener(() => { _EventManager.FireEvent(_Event.NewGame); });
     }
 }
