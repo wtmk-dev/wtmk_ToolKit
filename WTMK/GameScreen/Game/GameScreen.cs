@@ -35,4 +35,34 @@ public partial class GameScreen : IState
 
         Tag = _ScreenTags.Game;
     }
+
+    protected virtual void StateEnter()
+    {
+        if (_GameData.IsNewGame)
+        {
+            NewGame();
+        }
+    }
+
+    protected virtual void StateExit()
+    {
+        Debug.Log("Game Screen Exit");
+    }
+
+    protected virtual bool StateUpdate()
+    {
+        return false;
+    }
+
+    protected virtual void NewGame()
+    {
+        Debug.Log("New Game");
+        _View.SetActive(true);
+    }
+
+    protected virtual void LoadGame()
+    {
+        Debug.Log("Load Game");
+        _View.SetActive(true);
+    }
 }
