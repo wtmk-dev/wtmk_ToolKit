@@ -37,7 +37,7 @@ public class Main : MonoBehaviour
         }
     }
 
-    private void BuildGameScreens()
+    protected void BuildGameScreens()
     {
         StartScreen startScreen        = new StartScreen(_ScreenView);
         GameScreen gameScreen          = new GameScreen(_GameScreenView);
