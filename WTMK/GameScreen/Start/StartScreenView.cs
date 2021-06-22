@@ -2,11 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class StartScreenView : MonoBehaviour, IStateView
 {
     [SerializeField]
     private Button _Start;
+    [SerializeField]
+    private Image _Title, _sButton, _Background;
     private StartScreenEvent _Event = new StartScreenEvent();
 
     public Button bStart { get; private set; }
@@ -21,6 +24,18 @@ public class StartScreenView : MonoBehaviour, IStateView
     void Awake()
     {
         bStart = _Start;
-        _Start.onClick.AddListener(() => { _EventManager.FireEvent(_Event.NewGame); });
+        _Start.onClick.AddListener(TransitionStartScreen);
+    }
+
+    private void TransitionStartScreen()
+    {
+        _sButton.transform.DOScale(0f, 1.7f).SetEase(Ease.OutBounce);
+        _Title.transform.DOLocalMoveY(1000f, 1.7f).SetEase(Ease.Linear);
+
+        _Background.DOFade(0f, 2.7f).SetEase(Ease.InOutElastic).OnComplete(() =>
+        {
+            _EventManager.FireEvent(_Event.NewGame);
+        }); ;
+
     }
 }

@@ -11,7 +11,7 @@ public partial class GameScreen : IState
 
     public void OnEnter() 
     {
-        Debug.Log("Game Screen Enter");
+        //Debug.Log("Game Screen Enter");
         StateEnter(); // implement in your own partial
     }
 

@@ -22,7 +22,7 @@ public sealed class Dood
             return;
         }
 
-        Debug.Log(text);
+        Debug.Log("DOOD: " + text);
     }
 
     public void Error(string text)
