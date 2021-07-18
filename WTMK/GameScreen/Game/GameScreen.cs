@@ -2,22 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public partial class GameScreen : IState
+public class GameScreen : IState
 {
     public string Tag { get; }
     public IStateView View { get; }
-    public string NextState { get; }
+    public virtual string NextState { get; protected set; }
     public IList<string> ValidTransitions { get; set; }
 
     public void OnEnter() 
     {
         //Debug.Log("Game Screen Enter");
-        StateEnter(); // implement in your own partial
+        StateEnter(); // implement in your own override
     }
 
     public void OnExit() 
     {
-        StateExit(); // implement in your own partial
+        StateExit(); // implement in your own override
     }
 
     public bool OnUpdate() 

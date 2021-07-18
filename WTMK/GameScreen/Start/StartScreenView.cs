@@ -7,10 +7,8 @@ using DG.Tweening;
 public class StartScreenView : MonoBehaviour, IStateView
 {
     [SerializeField]
-    private Button _Start;
-    [SerializeField]
-    private Image _Title, _sButton, _Background;
-    private StartScreenEvent _Event = new StartScreenEvent();
+    protected Button _Start;
+    protected StartScreenEvent _Event = new StartScreenEvent();
 
     public Button bStart { get; private set; }
 

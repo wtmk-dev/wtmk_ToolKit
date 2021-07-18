@@ -4,7 +4,7 @@ using UnityEngine;
 
 public partial class GameScreenView : MonoBehaviour, IStateView
 {
-    public void SetActive(bool isActive)
+    public virtual void SetActive(bool isActive)
     {
         gameObject.SetActive(isActive);
     }

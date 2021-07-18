@@ -4,5 +4,6 @@ public class GameScreenTag
     public readonly string Game = "game";
     public readonly string Help = "help";
     public readonly string Credits = "credits";
+    public readonly string Queue = "queue";
 
 }
