@@ -141,13 +141,14 @@ public class SoundManager
         _EventManager.RegisterEventCallback("PlayJump", OnPlayJump);
         _EventManager.RegisterEventCallback("PlayDud", OnPlayDud);
         _EventManager.RegisterEventCallback("PlayBell", OnPlayBell);
-
+/*
         _EventManager.RegisterEventCallback(_TriggerEvent.Lever, OnPlayLever);
         _EventManager.RegisterEventCallback(_TriggerEvent.SetActive, OnPlayLever);
         _EventManager.RegisterEventCallback(_TriggerEvent.BellTriggered, OnPlayLever);
+*/
     }
 
-    private TriggerEvent _TriggerEvent = new TriggerEvent();
+    //private TriggerEvent _TriggerEvent = new TriggerEvent();
     private AudioClip _Dud, _Jump, _Lever, _Footsteps, _Bell;
 
     public void SetSounds(AudioClip dud,AudioClip bell,AudioClip lever,AudioClip jump,AudioClip footsteps)
@@ -162,6 +163,7 @@ public class SoundManager
 
     private void OnPlayJump(string name, object data)
     {
+        /*
         if(name == _TriggerEvent.SetActive)
         {
             (bool, int) id = ((bool, int))data;
@@ -173,6 +175,7 @@ public class SoundManager
         }
 
         PlayAudioClip(_Jump);
+        */
     }
 
     private void OnPlayLever(string name, object data)

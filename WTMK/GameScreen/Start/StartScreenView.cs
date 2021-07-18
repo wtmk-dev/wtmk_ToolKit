@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using DG.Tweening;
 
 public class StartScreenView : MonoBehaviour, IStateView
 {
@@ -27,6 +26,7 @@ public class StartScreenView : MonoBehaviour, IStateView
 
     private void TransitionStartScreen()
     {
+        /*
         _sButton.transform.DOScale(0f, 1.7f).SetEase(Ease.OutBounce);
         _Title.transform.DOLocalMoveY(1000f, 1.7f).SetEase(Ease.Linear);
 
@@ -34,6 +34,6 @@ public class StartScreenView : MonoBehaviour, IStateView
         {
             _EventManager.FireEvent(_Event.NewGame);
         }); ;
-
+        */
     }
 }
