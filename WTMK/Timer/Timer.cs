@@ -55,6 +55,12 @@ public class Timer
         _DiffTimeCalc = 0;
     }
 
+    public void Restart()
+    {
+        Reset();
+        StartTimer();
+    }
+
     private System.Diagnostics.Stopwatch _Timer;
     private float _TimerLength;
     private float _DiffTimeCalc;
