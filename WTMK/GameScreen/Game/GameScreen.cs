@@ -9,18 +9,18 @@ public class GameScreen : IState
     public virtual string NextState { get; protected set; }
     public IList<string> ValidTransitions { get; set; }
 
-    public void OnEnter() 
+    public virtual void OnEnter() 
     {
         //Debug.Log("Game Screen Enter");
         StateEnter(); // implement in your own override
     }
 
-    public void OnExit() 
+    public virtual void OnExit() 
     {
         StateExit(); // implement in your own override
     }
 
-    public bool OnUpdate() 
+    public virtual bool OnUpdate() 
     { 
         return StateUpdate(); 
     }

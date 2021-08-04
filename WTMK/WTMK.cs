@@ -15,6 +15,16 @@ public sealed class WTMK
         get { return _Rando; }
     }
 
+    public int Pick(int max)
+    {
+        return _Rando.Next(max);
+    }
+
+    public int Range(int min, int max)
+    {
+        return _Rando.Next(min,max);
+    }
+
     public void Shuffle<T>(IList<T> list)
     {
         int n = list.Count;

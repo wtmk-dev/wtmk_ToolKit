@@ -21,7 +21,7 @@ public class StartScreenView : MonoBehaviour, IStateView
     void Awake()
     {
         bStart = _Start;
-        _Start.onClick.AddListener(TransitionStartScreen);
+        //_Start.onClick.AddListener(TransitionStartScreen);
     }
 
     private void TransitionStartScreen()

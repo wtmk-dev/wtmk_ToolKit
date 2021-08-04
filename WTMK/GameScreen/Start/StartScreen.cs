@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class StartScreen : IState
 {
     public string Tag { get; }
-    public IStateView View { get; }
+    public virtual IStateView View { get; }
     public virtual string NextState { get; protected set; }
     public IList<string> ValidTransitions { get; set; }
     
