@@ -74,11 +74,11 @@ public class SoundManager
         });
     }
 
-    public void StartMainLoop()
+    public void PlayOnLoop(AudioClip aClip, float volume)
     {
-        _MainAudioSource.clip = _MainLoop[_Track];
+        _MainAudioSource.clip = aClip;
         _MainAudioSource.loop = true;
-        _MainAudioSource.volume = 0.03f;
+        _MainAudioSource.volume = volume;
         _MainAudioSource.Play();
     }
 
@@ -138,14 +138,9 @@ public class SoundManager
             _ScheduledAudioSources.Add(_AvaliableAudioSources.Dequeue());
         }
 
-        _EventManager.RegisterEventCallback("PlayJump", OnPlayJump);
-        _EventManager.RegisterEventCallback("PlayDud", OnPlayDud);
-        _EventManager.RegisterEventCallback("PlayBell", OnPlayBell);
-/*
-        _EventManager.RegisterEventCallback(_TriggerEvent.Lever, OnPlayLever);
-        _EventManager.RegisterEventCallback(_TriggerEvent.SetActive, OnPlayLever);
-        _EventManager.RegisterEventCallback(_TriggerEvent.BellTriggered, OnPlayLever);
-*/
+     
+        _EventManager.RegisterEventCallback("PlayOneShot", OnPlayOneShot);
+        _EventManager.RegisterEventCallback("PlayBGM", OnPlayBGM);
     }
 
     //private TriggerEvent _TriggerEvent = new TriggerEvent();
@@ -156,36 +151,17 @@ public class SoundManager
         _Dud = dud; _Bell = bell; _Lever = lever; _Jump = jump; _Footsteps = footsteps;
     }
 
-    private void OnPlayDud(string name, object data)
+    private void OnPlayOneShot(string name, object data)
     {
-        PlayAudioClip(_Dud);
+        AudioClip clip = (AudioClip)data;
+        PlayAudioClip(clip);
     }
 
-    private void OnPlayJump(string name, object data)
+    private void OnPlayBGM(string name, object data)
     {
-        /*
-        if(name == _TriggerEvent.SetActive)
-        {
-            (bool, int) id = ((bool, int))data;
-
-            if(!id.Item1)
-            {
-                return;
-            }
-        }
-
-        PlayAudioClip(_Jump);
-        */
-    }
-
-    private void OnPlayLever(string name, object data)
-    {
-        PlayAudioClip(_Lever);
-    }
-
-    private void OnPlayBell(string name, object data)
-    {
-        PlayAudioClip(_Bell);
+        AudioClip clip = (AudioClip)data;
+        PlayOnLoop(clip, 0.1f);
+        
     }
 
     private void CheckUpdateEffectAudioSource()
@@ -199,20 +175,6 @@ public class SoundManager
             _AvaliableAudioSources.Enqueue(_EffectAudioSource);
             _EffectAudioSource = _AvaliableAudioSources.Dequeue();
         }
-    }
-
-    private void SwapMainLoopClips()
-    {
-        _MainAudioSource.Stop();
-
-        _Track++;
-
-        if(_Track > _MainLoop.Count -1)
-        {
-            _Track = 0;
-        }
-
-        StartMainLoop();
     }
 }
 
