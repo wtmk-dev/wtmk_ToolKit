@@ -30,6 +30,7 @@ public class Timer
 
         if(_TimeRemaning <= 0f)
         {
+            StopTimer();
             OnTimerComplete?.Invoke();
         }
     }
@@ -47,6 +48,13 @@ public class Timer
         _Timer.Stop();
     }
 
+    public void CompleteTimer()
+    {
+        IsTicking = false;
+        _Timer.Stop();
+        OnTimerComplete?.Invoke();
+    }
+
     public void Reset()
     {
         IsTicking = false;
@@ -59,6 +67,24 @@ public class Timer
     {
         Reset();
         StartTimer();
+    }
+
+    public void Restart(float lenghtOfTimeInMilli, float tickSpeedInMilli)
+    {
+        SetTimer(lenghtOfTimeInMilli);
+        SetTick(tickSpeedInMilli);
+        Reset();
+        StartTimer();
+    }
+
+    public void SetTimer(float lenghtOfTimeInMilli)
+    {
+        _TimerLength = lenghtOfTimeInMilli;
+    }
+
+    public void SetTick(float tickSpeedInMilli)
+    {
+        _TickSpeed = tickSpeedInMilli;
     }
 
     private System.Diagnostics.Stopwatch _Timer;
@@ -74,4 +100,5 @@ public class Timer
         _TimerLength = lenghtOfTimeInMilli;
         _TickSpeed = tickSpeedInMilli;
     }
+
 }
