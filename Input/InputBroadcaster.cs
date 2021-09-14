@@ -12,7 +12,7 @@ public class InputBroadcaster : MonoBehaviour
         OnUpdate();
     }
 
-    public virtual void OnUpdate()
+    protected virtual void OnUpdate()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
