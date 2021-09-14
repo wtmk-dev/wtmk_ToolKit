@@ -27,7 +27,7 @@ public class GameScreenDirector : IStateDirector
         _StateMap[screen].View.SetActive(isActive);
     }
 
-    private GameScreenTag ValidScreen = new GameScreenTag();
+    private GameScreenTags ValidScreen = new GameScreenTags();
     private Dictionary<string, IState> _StateMap = new Dictionary<string, IState>();
 
     
