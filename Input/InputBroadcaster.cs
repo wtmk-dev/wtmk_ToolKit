@@ -9,7 +9,12 @@ public class InputBroadcaster : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Space))
+        OnUpdate();
+    }
+
+    public virtual void OnUpdate()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             _EventManager.FireEvent(_StartScreenEvent.ShowHelpScreen);
         }
