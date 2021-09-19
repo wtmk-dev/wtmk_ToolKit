@@ -26,7 +26,7 @@ public class StartScreen : IState
     }
 
     private GameData _GameData = GameData.Instance;
-    private GameScreenTag _ScreenTags = new GameScreenTag();
+    private GameScreenTags _ScreenTags = new GameScreenTags();
     private StartScreenView _View;
     private EventManager _EventManager = EventManager.Instance;
     private StartScreenEvent _Event = new StartScreenEvent();

@@ -13,7 +13,7 @@ public class HelpScreen : IState
     public bool OnUpdate() { return false; }
 
     private HelpScreenView _View;
-    private GameScreenTag _ScreenTags = new GameScreenTag();
+    private GameScreenTags _ScreenTags = new GameScreenTags();
 
     public HelpScreen(HelpScreenView view)
     {

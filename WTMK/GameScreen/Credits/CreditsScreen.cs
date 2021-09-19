@@ -12,7 +12,7 @@ public class CreditsScreen : IState
     public bool OnUpdate() { return false; }
 
     private CreditsScreenView _View;
-    private GameScreenTag _ScreenTags = new GameScreenTag();
+    private GameScreenTags _ScreenTags = new GameScreenTags();
 
     public CreditsScreen(CreditsScreenView view)
     {

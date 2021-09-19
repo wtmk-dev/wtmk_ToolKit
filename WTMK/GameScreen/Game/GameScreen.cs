@@ -26,7 +26,7 @@ public class GameScreen : IState
     }
     
     private GameScreenView _View;
-    private GameScreenTag _ScreenTags = new GameScreenTag();
+    private GameScreenTags _ScreenTags = new GameScreenTags();
     private GameData _GameData = GameData.Instance;
     public GameScreen(GameScreenView view)
     {

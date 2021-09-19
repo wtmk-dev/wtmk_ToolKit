@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using DG.Tweening;
 
 public class SoundManager
 {
@@ -59,20 +58,7 @@ public class SoundManager
         }
     }
 
-    public void FadeMainLoopTo(AudioClip aClip, float outTime, float inTime)
-    {
-        float volume = _MainAudioSource.volume;
-        _MainAudioSource.DOFade(0, outTime).OnComplete(() =>
-        {
-            _MainAudioSource.Stop();
-
-            _MainAudioSource.clip = aClip;
-            _MainAudioSource.loop = true;
-            _MainAudioSource.Play();
-
-            _MainAudioSource.DOFade(volume, inTime);
-        });
-    }
+    
 
     public void PlayOnLoop(AudioClip aClip, float volume)
     {
@@ -82,20 +68,6 @@ public class SoundManager
         _MainAudioSource.Play();
     }
 
-    public void SetMainLoopToIdelVolume()
-    {
-        //_MainAudioSource.DOFade(.1f, .5f);
-    }
-
-    public void SetMainLoopToPlayVolume()
-    {
-        //_MainAudioSource.DOFade(.5f, .3f);
-    }
-
-    public void SetMainLoopOff()
-    {
-        _MainAudioSource.DOFade(0f, .7f);
-    }
 
     public double GetDurationFromClip(AudioClip aClip)
     {

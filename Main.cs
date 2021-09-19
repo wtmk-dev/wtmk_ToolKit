@@ -2,57 +2,74 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// This class should be duplicated since everything in it will be customized per game
 public class Main : MonoBehaviour
 {
+    // Game screen views
     [SerializeField]
-    private StartScreenView _ScreenView;
+    private StartScreenView _StartScreenView;
     [SerializeField]
     private GameScreenView _GameScreenView;
     [SerializeField]
     private HelpScreenView _HelpScreenView;
     [SerializeField]
-    private CreditsScreenView _CreditsView;
+    private CreditsScreenView _CreditScreenView;
+
+    // Game screens
+    private StartScreen _StartScreen;
+    private GameScreen _GameScreen;
+    private HelpScreen _HelpScreen;
+    private CreditsScreen _CreditsScreen;
 
     private IStateDirector[] _Directors = new IStateDirector[1];
-    private GameScreenDirector _GameStateDirector;
+    private GameScreenDirector _GameScreenDirector;
 
     private Dood _Dood = Dood.Instance;
 
-    void Awake()
+    private void Awake()
     {
-        BuildGameScreens();
+        InitGameScreens(BuildGameScreens());
     }
 
-    void Start()
+    private void Start()
     {
         Dood.IsLogging = true;
-        _GameStateDirector.IsActive = true;
+        _GameScreenDirector.IsActive = true;
     }
 
-    void Update()
+    private void Update()
     {
-        for(int elm = 0; elm < _Directors.Length; elm++)
+        for (int elm = 0; elm < _Directors.Length; elm++)
         {
             _Directors[elm].OnUpdate();
         }
     }
 
-    protected void BuildGameScreens()
+    private IState[] BuildGameScreens()
     {
-        StartScreen startScreen        = new StartScreen(_ScreenView);
-        GameScreen gameScreen          = new GameScreen(_GameScreenView);
-        HelpScreen helpScreen          = new HelpScreen(_HelpScreenView);
-        CreditsScreen creditsScreen    = new CreditsScreen(_CreditsView);
+        _StartScreen        = new StartScreen(_StartScreenView);
+        _GameScreen         = new GameScreen(_GameScreenView);
+        _HelpScreen         = new HelpScreen(_HelpScreenView);
+        _CreditsScreen      = new CreditsScreen(_CreditScreenView);
 
-        startScreen.ValidTransitions   = new string[] { gameScreen.Tag, helpScreen.Tag, creditsScreen.Tag };
-        gameScreen.ValidTransitions    = new string[] { startScreen.Tag, helpScreen.Tag, creditsScreen.Tag };
-        helpScreen.ValidTransitions    = new string[] { startScreen.Tag, gameScreen.Tag };
-        creditsScreen.ValidTransitions = new string[] { startScreen.Tag, gameScreen.Tag };
+        _StartScreen.ValidTransitions   = new string[] { _GameScreen.Tag, _HelpScreen.Tag, _CreditsScreen.Tag };
+        _GameScreen.ValidTransitions    = new string[] { _StartScreen.Tag, _HelpScreen.Tag, _CreditsScreen.Tag };
+        _HelpScreen.ValidTransitions    = new string[] { _StartScreen.Tag, _GameScreen.Tag };
+        _CreditsScreen.ValidTransitions = new string[] { _StartScreen.Tag, _GameScreen.Tag };
 
-        var gamestates                 = new IState[] { startScreen , gameScreen , helpScreen, creditsScreen };
+        IState[] gameStates = new IState[] { _StartScreen, _GameScreen, _HelpScreen, _CreditsScreen };
+        
+        return gameStates;
+    }
 
-        _GameStateDirector = new GameScreenDirector(gamestates);
+    private void InitGameScreens(IState[] gameStates)
+    {
+        if(gameStates == null)
+        {
+            Debug.LogError("Error: Can't init game screens.");
+        }
 
-        _Directors[0] = _GameStateDirector;
+        _GameScreenDirector = new GameScreenDirector(gameStates);
+        _Directors[0] = _GameScreenDirector;
     }
 }
