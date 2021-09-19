@@ -27,10 +27,10 @@ public class GameScreenDirector : IStateDirector
         _StateMap[screen].View.SetActive(isActive);
     }
 
+    private Dood _Debug = Dood.Instance;
     private GameScreenTags ValidScreen = new GameScreenTags();
     private Dictionary<string, IState> _StateMap = new Dictionary<string, IState>();
 
-    
     private IState[] _States;
     private string _CurrentState;
     private string _PreviousState;
@@ -54,6 +54,12 @@ public class GameScreenDirector : IStateDirector
     {
         for (int i = 0; i < _States.Length; i++)
         {
+            if(_States[i].View == null)
+            {
+                _Debug.Log($"{_States[i].Tag} View is null");
+                return;
+            }
+
             _States[i].View.SetActive(false);
         }
     }
