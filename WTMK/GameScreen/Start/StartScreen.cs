@@ -12,7 +12,10 @@ public class StartScreen : IState
     public virtual void OnEnter() 
     {
         _Ready = false;
-        _View.SetActive(true);
+        if(_View != null)
+        {
+            _View.SetActive(true);
+        }
     }
     
     public virtual void OnExit() 
