@@ -24,8 +24,11 @@ public class Pool : IPool
 
         for (int i = 0; i < _Pool.Length; i++)
         {
-            _Pool[i].OnReturnRequest += PlaceInQueue;
-            _Queue.Enqueue(_Pool[i]);
+            if(_Pool[i] != null)
+            {
+                _Pool[i].OnReturnRequest += PlaceInQueue;
+                _Queue.Enqueue(_Pool[i]);
+            }
         }
     }
 
