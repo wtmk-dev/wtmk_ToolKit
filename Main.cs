@@ -22,7 +22,7 @@ public class Main : MonoBehaviour
     private CreditsScreen _CreditsScreen;
 
     private IStateDirector[] _Directors = new IStateDirector[1];
-    private GameScreenDirector _GameScreenDirector;
+    private StateDirector _GameScreenDirector;
 
     private Dood _Dood = Dood.Instance;
 
@@ -69,7 +69,7 @@ public class Main : MonoBehaviour
             Debug.LogError("Error: Can't init game screens.");
         }
 
-        _GameScreenDirector = new GameScreenDirector(gameStates);
+        _GameScreenDirector = new StateDirector(gameStates);
         _Directors[0] = _GameScreenDirector;
     }
 }

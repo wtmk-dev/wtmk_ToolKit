@@ -33,6 +33,7 @@ public class PoolTest : MonoBehaviour
 
     public void Update()
     {
+        /*
         if(Input.GetKeyDown(KeyCode.Space))
         {
             _CurrentPoolable = (PoolableGameObject)_GameObjectPool.GetPoolable();
@@ -46,5 +47,6 @@ public class PoolTest : MonoBehaviour
             _CurrentPoolable.Kill();
             _Debug.Log($"{_GameObjectPool.QueueCount}");
         }
+        */
     }
 }
