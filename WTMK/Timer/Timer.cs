@@ -4,12 +4,13 @@ using System.Collections.Generic;
 
 public class Timer
 {
-    public event Action OnTimerComplete;
-    public event Action<float> OnTimerTick; //_TimeRemaning
+    public virtual event Action OnTimerComplete;
+    public virtual event Action<float> OnTimerTick; //_TimeRemaning
 
-    public bool IsTicking { get; private set; }
+    public virtual bool IsTicking { get; private set; }
+    public virtual float RunTime { get; private set; }
 
-    public void Tick()
+    public virtual void Tick()
     {
         if(!IsTicking)
         {
@@ -23,14 +24,14 @@ public class Timer
         }
     }
 
-    public void Start()
+    public virtual void Start()
     {
         IsTicking = true;
         _Timer.Reset();
         _Timer.Start();
     }
 
-    public void Start(float lenghtOfTimeInMilli)
+    public virtual void Start(float lenghtOfTimeInMilli)
     {
         _TimerLength = lenghtOfTimeInMilli;
         IsTicking = true;
@@ -38,14 +39,15 @@ public class Timer
         _Timer.Start();
     }
 
-    public void Stop()
+    public virtual void Stop()
     {
         IsTicking = false;
         _Timer.Stop();
+        RunTime = _Timer.ElapsedMilliseconds;
     }
 
-    private System.Diagnostics.Stopwatch _Timer;
-    private float _TimerLength;
+    protected System.Diagnostics.Stopwatch _Timer;
+    protected float _TimerLength;
 
     public Timer(float lenghtOfTimeInMilli)
     {
