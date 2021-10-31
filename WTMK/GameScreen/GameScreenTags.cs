@@ -1,4 +1,4 @@
-public class GameScreenTags 
+public class GameScreenTags
 { 
     public readonly string Start = "start";
     public readonly string Game = "game";
