@@ -59,6 +59,18 @@ public class StateDirector : IStateDirector
         HideAllScreens();
     }
 
+    public StateDirector(State[] states)
+    {
+        _States = states;
+
+        for (int i = 0; i < _States.Length; i++)
+        {
+            _StateMap.Add(_States[i].Tag, _States[i]);
+        }
+
+        HideAllScreens();
+    }
+
     private void HideAllScreens()
     {
         for (int i = 0; i < _States.Length; i++)
