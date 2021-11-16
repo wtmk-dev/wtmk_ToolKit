@@ -17,4 +17,10 @@ public class PoolableGameObject : MonoBehaviour , IPoolable
         OnReturnRequest?.Invoke(this);
         gameObject.SetActive(false);
     }
+
+    public void SetActive(bool isActive)
+    {
+        gameObject.SetActive(false);
+    }
+
 }

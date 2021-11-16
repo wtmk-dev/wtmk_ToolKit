@@ -47,24 +47,24 @@ public class Main : MonoBehaviour
 
     private IState[] BuildGameScreens()
     {
-        _StartScreen        = new StartScreen(_StartScreenView);
-        _GameScreen         = new GameScreen(_GameScreenView);
-        _HelpScreen         = new HelpScreen(_HelpScreenView);
-        _CreditsScreen      = new CreditsScreen(_CreditScreenView);
+        _StartScreen = new StartScreen(_StartScreenView);
+        _GameScreen = new GameScreen(_GameScreenView);
+        _HelpScreen = new HelpScreen(_HelpScreenView);
+        _CreditsScreen = new CreditsScreen(_CreditScreenView);
 
-        _StartScreen.ValidTransitions   = new string[] { _GameScreen.Tag, _HelpScreen.Tag, _CreditsScreen.Tag };
-        _GameScreen.ValidTransitions    = new string[] { _StartScreen.Tag, _HelpScreen.Tag, _CreditsScreen.Tag };
-        _HelpScreen.ValidTransitions    = new string[] { _StartScreen.Tag, _GameScreen.Tag };
+        _StartScreen.ValidTransitions = new string[] { _GameScreen.Tag, _HelpScreen.Tag, _CreditsScreen.Tag };
+        _GameScreen.ValidTransitions = new string[] { _StartScreen.Tag, _HelpScreen.Tag, _CreditsScreen.Tag };
+        _HelpScreen.ValidTransitions = new string[] { _StartScreen.Tag, _GameScreen.Tag };
         _CreditsScreen.ValidTransitions = new string[] { _StartScreen.Tag, _GameScreen.Tag };
 
         IState[] gameStates = new IState[] { _StartScreen, _GameScreen, _HelpScreen, _CreditsScreen };
-        
+
         return gameStates;
     }
 
     private void InitGameScreens(IState[] gameStates)
     {
-        if(gameStates == null)
+        if (gameStates == null)
         {
             Debug.LogError("Error: Can't init game screens.");
         }
