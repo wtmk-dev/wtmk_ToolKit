@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class SoundManager
 {
-    public void PlayAudioClip(AudioClip aClip, float volume = 1f, bool loop = false)
+    public void PlayAudioClip(AudioClip aClip, float volume = 0f, bool loop = false)
     {
         CheckUpdateEffectAudioSource();
 
@@ -17,9 +18,27 @@ public class SoundManager
         }
     }
 
-    public void StopAudioClip()
+    public void PlayOnMainAudio(AudioClip aClip, float volume = 1f, bool loop = false)
     {
-        _EffectAudioSource.Stop();
+        if (_MainAudioSource.isPlaying)
+        {
+            _MainAudioSource.DOFade(0, 0.3f).OnComplete(() =>
+            {
+                PlayMainAudio(aClip, volume, loop);
+            });
+        }
+        else
+        {
+            PlayMainAudio(aClip, volume, loop);
+        }
+    }
+
+    private void PlayMainAudio(AudioClip aClip, float volume = 1f, bool loop = false)
+    {
+        _MainAudioSource.clip = aClip;
+        _MainAudioSource.loop = loop;
+        _MainAudioSource.volume = volume;
+        _MainAudioSource.Play();
     }
 
     public void PlayOneShot(AudioClip aClip, float volume = 1f)
@@ -29,6 +48,7 @@ public class SoundManager
 
     public void PlayScheduled(AudioClip aClip, double delay = 0.0, float volume = 1f, bool loop = false)
     {
+        /*
         double schedule = AudioSettings.dspTime + delay;
 
         _ScheduledAudioSources[_BufferIndex].clip = aClip;
@@ -43,6 +63,7 @@ public class SoundManager
         {
             _BufferIndex = 0;
         }
+        */
     }
 
     public void PlaySoundEffectDelayed(AudioClip aClip, float delay, float volume = 1f, bool loop = false)
@@ -58,41 +79,28 @@ public class SoundManager
         }
     }
 
-    
-
-    public void PlayOnLoop(AudioClip aClip, float volume)
-    {
-        _MainAudioSource.clip = aClip;
-        _MainAudioSource.loop = true;
-        _MainAudioSource.volume = volume;
-        _MainAudioSource.Play();
-    }
-
-
     public double GetDurationFromClip(AudioClip aClip)
     {
         return (double)aClip.samples / aClip.frequency;
     }
 
+    private EventManager _EventManager = EventManager.Instance;
+    private AudioEvent _Event = new AudioEvent();
+
     private Queue<AudioSource> _AvaliableAudioSources;
     private List<AudioSource> _ScheduledAudioSources;
 
+    private AudioClip _CurrentOneShot;
+
     private AudioSource _MainAudioSource;
     private AudioSource _EffectAudioSource;
-    private AudioSource _OneShotAudio;
-    private GameObject _bzAudioSource;
-    private List<AudioClip> _MainLoop;
 
-    private int _Track = 0;
-
-    private int _BufferIndex = 0;
     private int _ScheduledBufferSize = 6;
+    private float _On = 1, _Off = 0;
 
-    private EventManager _EventManager = EventManager.Instance;
-
-    public SoundManager(IList<AudioSource> audioSources, List<AudioClip> defaultAudio = null)
+    public SoundManager(List<AudioSource> audioSources)
     {
-        _MainLoop = defaultAudio;
+        _ScheduledBufferSize = audioSources.Count;
         _AvaliableAudioSources = new Queue<AudioSource>();
         _ScheduledAudioSources = new List<AudioSource>();
 
@@ -100,45 +108,16 @@ public class SoundManager
         {
             _AvaliableAudioSources.Enqueue(audioSources[i]);
         }
-       
+
         _MainAudioSource = _AvaliableAudioSources.Dequeue();
         _EffectAudioSource = _AvaliableAudioSources.Dequeue();
-        _OneShotAudio = _AvaliableAudioSources.Dequeue();
 
-        for (int i = 0; i < _ScheduledBufferSize; i++)
-        {
-            _ScheduledAudioSources.Add(_AvaliableAudioSources.Dequeue());
-        }
-
-     
-        _EventManager.RegisterEventCallback("PlayOneShot", OnPlayOneShot);
-        _EventManager.RegisterEventCallback("PlayBGM", OnPlayBGM);
-    }
-
-    //private TriggerEvent _TriggerEvent = new TriggerEvent();
-    private AudioClip _Dud, _Jump, _Lever, _Footsteps, _Bell;
-
-    public void SetSounds(AudioClip dud,AudioClip bell,AudioClip lever,AudioClip jump,AudioClip footsteps)
-    {
-        _Dud = dud; _Bell = bell; _Lever = lever; _Jump = jump; _Footsteps = footsteps;
-    }
-
-    private void OnPlayOneShot(string name, object data)
-    {
-        AudioClip clip = (AudioClip)data;
-        PlayAudioClip(clip);
-    }
-
-    private void OnPlayBGM(string name, object data)
-    {
-        AudioClip clip = (AudioClip)data;
-        PlayOnLoop(clip, 0.1f);
-        
+        RegisterCallbacks();
     }
 
     private void CheckUpdateEffectAudioSource()
     {
-        if(_EffectAudioSource == null)
+        if (_EffectAudioSource == null)
         {
             _EffectAudioSource = _AvaliableAudioSources.Dequeue();
         }
@@ -148,5 +127,64 @@ public class SoundManager
             _EffectAudioSource = _AvaliableAudioSources.Dequeue();
         }
     }
+
+    private void RegisterCallbacks()
+    {
+        _EventManager.RegisterEventCallback(_Event.Play, OnPlay);
+        _EventManager.RegisterEventCallback(_Event.PlayOnMain, OnPlayOnMain);
+        _EventManager.RegisterEventCallback(_Event.PlayOneShot, OnPlayOneShot);
+
+        _EventManager.RegisterEventCallback(_Event.FadeOutEffect, OnFadeOutEffect);
+        _EventManager.RegisterEventCallback(_Event.FadeOutMain, OnFadeOutMain);
+    }
+
+    private void OnPlayOnMain(string name, object data)
+    {
+        SoundManagerPlayArgs args = (SoundManagerPlayArgs)data;
+        PlayOnMainAudio(args.Aclip, args.Volume, args.Loop);
+    }
+
+    private void OnPlay(string name, object data)
+    {
+        SoundManagerPlayArgs args = (SoundManagerPlayArgs)data;
+        PlayAudioClip(args.Aclip, args.Volume, args.Loop);
+    }
+
+    private void OnPlayOneShot(string name, object data)
+    {
+        _CurrentOneShot = (AudioClip)data;
+        PlayAudioClip(_CurrentOneShot);
+    }
+
+    private void OnFadeOutMain(string name, object data)
+    {
+        if (_MainAudioSource.isPlaying)
+        {
+            _MainAudioSource.DOFade(_Off, 0.3f).OnComplete(() =>
+            {
+                _MainAudioSource.Stop();
+                _MainAudioSource.DOFade(_On, 0.1f);
+            });
+        }
+    }
+
+    private void OnFadeOutEffect(string name, object data)
+    {
+        if (_EffectAudioSource.isPlaying)
+        {
+            _EffectAudioSource.DOFade(_Off, 0.3f).OnComplete(() =>
+            {
+                _EffectAudioSource.Stop();
+                _EffectAudioSource.DOFade(_On, 0.1f);
+            });
+        }
+    }
+}
+
+public class SoundManagerPlayArgs
+{
+    public AudioClip Aclip;
+    public float Volume;
+    public bool Loop;
 }
 

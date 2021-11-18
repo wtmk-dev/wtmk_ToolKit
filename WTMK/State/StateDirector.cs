@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 public class StateDirector : IStateDirector
 {
+    public State CurrentState { get { return (State)_StateMap[_CurrentState]; } }
     public bool IsActive { get; set; }
 
     public void OnUpdate()
@@ -40,7 +41,6 @@ public class StateDirector : IStateDirector
     }
 
     private Dood _Debug = Dood.Instance;
-    private GameScreenTags ValidScreen = new GameScreenTags();
     private Dictionary<string, IState> _StateMap = new Dictionary<string, IState>();
 
     private IState[] _States;
