@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 public sealed class GameData
 {
-    private static readonly GameData _instance = new GameData();
+    private static readonly GameData _instance = new GameData(); 
 
     public static GameData Instance
     {
@@ -13,4 +13,9 @@ public sealed class GameData
     }
 
     public bool IsNewGame { get; set; }
+
+    private GameData()
+    {
+
+    }
 }
