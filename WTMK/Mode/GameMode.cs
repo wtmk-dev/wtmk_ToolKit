@@ -10,12 +10,14 @@ public class GameMode : State
     {
         _EventManager.RegisterEventCallback(GameScreenEvent.GameSelect.ToString(), OnGameSelect);
         _EventManager.RegisterEventCallback(GameScreenEvent.GameSelected.ToString(), OnGameSelected);
+        _EventManager.RegisterEventCallback(GameScreenEvent.ModeExit.ToString(), OnModeExit);
     }
 
     protected virtual void UnregisterGameScreenEvents()
     {
         _EventManager.UnregisterEventCallback(GameScreenEvent.GameSelect.ToString(), OnGameSelect);
         _EventManager.UnregisterEventCallback(GameScreenEvent.GameSelected.ToString(), OnGameSelected);
+        _EventManager.UnregisterEventCallback(GameScreenEvent.ModeExit.ToString(), OnModeExit);
     }
 
     protected virtual void OnGameSelect(string name, object data)
@@ -37,9 +39,15 @@ public class GameMode : State
         }
     }
 
-    protected virtual void OnGameSelectExit(string name, object data)
+    protected virtual void OnModeExit(string name, object data)
     {
-        //override to register inputs
+        string exit = (string)name;
+
+        if(Tag == exit)
+        {
+
+        }
+
     }
 
 }

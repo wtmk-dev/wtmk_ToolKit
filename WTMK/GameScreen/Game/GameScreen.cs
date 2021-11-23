@@ -73,4 +73,5 @@ public enum GameScreenEvent
     GameSelect,
     GameSelected,
     GameSelectExit,
+    ModeExit
 }
