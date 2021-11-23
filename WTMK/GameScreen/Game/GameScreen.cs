@@ -66,3 +66,11 @@ public class GameScreen : IState
         _View.SetActive(true);
     }
 }
+
+
+public enum GameScreenEvent
+{
+    GameSelect,
+    GameSelected,
+    GameSelectExit,
+}
