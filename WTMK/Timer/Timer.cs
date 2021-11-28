@@ -49,7 +49,7 @@ public class Timer
     protected System.Diagnostics.Stopwatch _Timer;
     protected float _TimerLength;
 
-    public Timer(float lenghtOfTimeInMilli)
+    public Timer(float lenghtOfTimeInMilli = 0)
     {
         _Timer = new System.Diagnostics.Stopwatch();
         _TimerLength = lenghtOfTimeInMilli;
