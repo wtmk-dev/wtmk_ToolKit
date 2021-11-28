@@ -3,9 +3,9 @@ using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using GoogleMobileAds.Api;
+//using GoogleMobileAds.Api;
 
-
+/*
 public class AdManager : MonoBehaviour
 {
     [SerializeField]
@@ -99,3 +99,4 @@ public class AdManager : MonoBehaviour
         _EventManager.RegisterEventCallback("GameStart", OnShowBannerAd);
     }
 }
+*/
