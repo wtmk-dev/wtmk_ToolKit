@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-public class Timer
+public class Timer : Updatable
 {
     public virtual event Action OnTimerComplete;
     public virtual event Action<float> OnTimerTick; //_TimeRemaning
@@ -10,7 +10,7 @@ public class Timer
     public virtual bool IsTicking { get; private set; }
     public virtual float RunTime { get; private set; }
 
-    public virtual void Tick()
+    public virtual void Update()
     {
         if(!IsTicking)
         {
