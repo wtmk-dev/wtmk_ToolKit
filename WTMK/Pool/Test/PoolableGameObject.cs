@@ -23,4 +23,9 @@ public class PoolableGameObject : MonoBehaviour , IPoolable
         gameObject.SetActive(false);
     }
 
+    public void Return()
+    {
+        OnReturnRequest?.Invoke((IPoolable)this);
+    }
+
 }

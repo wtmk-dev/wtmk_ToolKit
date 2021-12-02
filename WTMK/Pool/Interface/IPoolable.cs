@@ -6,4 +6,5 @@ public interface IPoolable
 {
     public event Action<IPoolable> OnReturnRequest;
     public void SetActive(bool isActive);
+    public void Return();
 }
