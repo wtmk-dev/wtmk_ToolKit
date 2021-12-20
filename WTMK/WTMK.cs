@@ -37,4 +37,28 @@ public sealed class WTMK
             list[n] = value;
         }
     }
+
+    public List<T> ShiftLeft<T>(List<T> list, int shiftBy)
+    {
+        if (list.Count <= shiftBy)
+        {
+            return list;
+        }
+
+        var result = list.GetRange(shiftBy, list.Count - shiftBy);
+        result.AddRange(list.GetRange(0, shiftBy));
+        return result;
+    }
+
+    public List<T> ShiftRight<T>(List<T> list, int shiftBy)
+    {
+        if (list.Count <= shiftBy)
+        {
+            return list;
+        }
+
+        var result = list.GetRange(list.Count - shiftBy, shiftBy);
+        result.AddRange(list.GetRange(0, list.Count - shiftBy));
+        return result;
+    }
 }

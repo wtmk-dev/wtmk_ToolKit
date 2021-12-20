@@ -7,7 +7,8 @@ public class Pool : IPool
     public int QueueCount { get { return _Queue.Count; } }
     public IPoolable GetPoolable() 
     {
-        IPoolable pool = _Queue.Dequeue();        
+        IPoolable pool = _Queue.Dequeue();
+        pool.OnReturnRequest += PlaceInQueue;
         return pool;
     }
 
