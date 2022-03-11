@@ -23,10 +23,12 @@ public class SoundManager
     {
         if (_MainAudioSource.isPlaying)
         {
+            /*
             _MainAudioSource.DOFade(0, 0.3f).OnComplete(() =>
             {
                 PlayMainAudio(aClip, volume, loop);
             });
+            */
         }
         else
         {
