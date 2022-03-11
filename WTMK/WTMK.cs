@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using System.Collections.Generic;
 
 public sealed class WTMK
@@ -60,5 +62,11 @@ public sealed class WTMK
         var result = list.GetRange(list.Count - shiftBy, shiftBy);
         result.AddRange(list.GetRange(0, list.Count - shiftBy));
         return result;
+    }
+
+    public List<T> GetEnumValues<T>(T enumType)
+    {
+        List<T> enumList = Enum.GetValues(typeof(T)).Cast<T>().ToList();
+        return enumList;
     }
 }
