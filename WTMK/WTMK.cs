@@ -64,7 +64,7 @@ public sealed class WTMK
         return result;
     }
 
-    public List<T> GetEnumValues<T>(T enumType)
+    public List<T> GetEnumValues<T>()
     {
         List<T> enumList = Enum.GetValues(typeof(T)).Cast<T>().ToList();
         return enumList;
