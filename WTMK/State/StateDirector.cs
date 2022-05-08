@@ -13,7 +13,7 @@ public class StateDirector : IStateDirector
             return;
         }
 
-        if (_StateMap[_CurrentState].OnUpdate())
+        if(_StateMap[_CurrentState].OnUpdate())
         {
             _PreviousState = _CurrentState;
             _CurrentState = _StateMap[_CurrentState].NextState;

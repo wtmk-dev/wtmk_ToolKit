@@ -15,7 +15,7 @@ public sealed class Dood
 
     public static bool IsLogging { get; set; }
 
-    public void Log(string text)
+    public void Log(object text)
     {
         if (!IsLogging)
         {
@@ -25,7 +25,7 @@ public sealed class Dood
         Debug.Log(text);
     }
 
-    public void Error(string text)
+    public void Error(object text)
     {
         if (!IsLogging)
         {
@@ -35,7 +35,7 @@ public sealed class Dood
         Debug.LogError(text);
     }
 
-    public void Warning(string text)
+    public void Warning(object text)
     {
         if(!IsLogging)
         {
