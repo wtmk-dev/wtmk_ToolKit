@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-public class StateProcess 
+public class StateProcess
 {
     public delegate void Enter();
     public delegate void Update();
