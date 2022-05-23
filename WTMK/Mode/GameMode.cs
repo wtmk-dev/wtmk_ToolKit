@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
-public class GameMode : State
+public class GameMode : State<string>
 {
     public event Action OnModeChange;
     private EventManager _EventManager = EventManager.Instance;

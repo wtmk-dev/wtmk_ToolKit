@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class GameScreenDirector : IStateDirector
+public class StateMachine<T> : IStateDirector
 {
+    public State<T> CurrentState { get { return (State<T>)_StateMap[_CurrentState]; } }
     public bool IsActive { get; set; }
 
     public void OnUpdate()
     {
-        if(!IsActive)
+        if (!IsActive)
         {
             return;
         }
@@ -22,39 +23,59 @@ public class GameScreenDirector : IStateDirector
         }
     }
 
-    public void SetActive(string screen, bool isActive)
+    public void SetActive(T screen, bool isActive)
     {
         _StateMap[screen].View.SetActive(isActive);
     }
 
+    public void SetCurrentState(T state)
+    {
+        if (_CurrentState != null && _StateMap.ContainsKey(_CurrentState))
+        {
+            _PreviousState = _CurrentState;
+            _StateMap[_PreviousState].OnExit();
+        }
+
+        _CurrentState = state;
+        _StateMap[_CurrentState].OnEnter();
+    }
+
     private Dood _Debug = Dood.Instance;
-    private GameScreenTags ValidScreen = new GameScreenTags();
-    private Dictionary<string, IState<string>> _StateMap = new Dictionary<string, IState<string>>();
+    private Dictionary<T, IState<T>> _StateMap = new Dictionary<T, IState<T>>();
 
-    private IState<string>[] _States;
-    private string _CurrentState;
-    private string _PreviousState;
+    private IState<T>[] _States;
+    private T _CurrentState;
+    private T _PreviousState;
 
-    public GameScreenDirector(IState<string>[] states)
+    public StateMachine(IState<T>[] states)
     {
         _States = states;
-
-        HideAllScreens();
 
         for (int i = 0; i < _States.Length; i++)
         {
             _StateMap.Add(_States[i].Tag, _States[i]);
         }
 
-        _CurrentState = ValidScreen.Start;
-        _StateMap[_CurrentState].OnEnter();
+        HideAllScreens();
+    }
+
+    public StateMachine(State<T>[] states)
+    {
+        _States = states;
+
+        for (int i = 0; i < _States.Length; i++)
+        {
+            _StateMap.Add(_States[i].Tag, _States[i]);
+        }
+
+        HideAllScreens();
     }
 
     private void HideAllScreens()
     {
         for (int i = 0; i < _States.Length; i++)
         {
-            if(_States[i].View == null)
+            if (_States[i].View == null)
             {
                 _Debug.Log($"{_States[i].Tag} View is null");
                 return;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class StateDirector : IStateDirector
 {
-    public State CurrentState { get { return (State)_StateMap[_CurrentState]; } }
+    public State<string> CurrentState { get { return (State<string>)_StateMap[_CurrentState]; } }
     public bool IsActive { get; set; }
 
     public void OnUpdate()
@@ -41,13 +41,13 @@ public class StateDirector : IStateDirector
     }
 
     private Dood _Debug = Dood.Instance;
-    private Dictionary<string, IState> _StateMap = new Dictionary<string, IState>();
+    private Dictionary<string, IState<string>> _StateMap = new Dictionary<string, IState<string>>();
 
-    private IState[] _States;
+    private IState<string>[] _States;
     private string _CurrentState;
     private string _PreviousState;
 
-    public StateDirector(IState[] states)
+    public StateDirector(IState<string>[] states)
     {
         _States = states;
 
@@ -59,7 +59,7 @@ public class StateDirector : IStateDirector
         HideAllScreens();
     }
 
-    public StateDirector(State[] states)
+    public StateDirector(State<string>[] states)
     {
         _States = states;
 

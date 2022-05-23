@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class CreditsScreen : IState
+public class CreditsScreen : IState<string>
 {
     public string Tag { get; }
     public IStateView View { get; }

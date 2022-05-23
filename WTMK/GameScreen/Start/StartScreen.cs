@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-public class StartScreen : IState
+public class StartScreen : IState<string>
 {
     public string Tag { get; }
     public virtual IStateView View { get; }

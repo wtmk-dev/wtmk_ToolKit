@@ -45,7 +45,7 @@ public class Main : MonoBehaviour
         }
     }
 
-    private IState[] BuildGameScreens()
+    private IState<string>[] BuildGameScreens()
     {
         _StartScreen = new StartScreen(_StartScreenView);
         _GameScreen = new GameScreen(_GameScreenView);
@@ -57,12 +57,12 @@ public class Main : MonoBehaviour
         _HelpScreen.ValidTransitions = new string[] { _StartScreen.Tag, _GameScreen.Tag };
         _CreditsScreen.ValidTransitions = new string[] { _StartScreen.Tag, _GameScreen.Tag };
 
-        IState[] gameStates = new IState[] { _StartScreen, _GameScreen, _HelpScreen, _CreditsScreen };
+        IState<string>[] gameStates = new IState<string>[] { _StartScreen, _GameScreen, _HelpScreen, _CreditsScreen };
 
         return gameStates;
     }
 
-    private void InitGameScreens(IState[] gameStates)
+    private void InitGameScreens(IState<string>[] gameStates)
     {
         if (gameStates == null)
         {

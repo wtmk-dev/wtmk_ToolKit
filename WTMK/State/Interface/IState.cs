@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 
-public interface IState 
+public interface IState<T> 
 {
-    string Tag { get; }
-    string NextState { get; }
-    IList<string> ValidTransitions { get; }
+    T Tag { get; }
+    T NextState { get; }
+    IList<T> ValidTransitions { get; }
     IStateView View { get; }
     void OnEnter();
     void OnExit();

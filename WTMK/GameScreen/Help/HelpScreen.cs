@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HelpScreen : IState
+public class HelpScreen : IState<string>
 {
     public string Tag { get; }
     public IStateView View { get; }
