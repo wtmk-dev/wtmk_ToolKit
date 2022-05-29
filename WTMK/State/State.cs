@@ -9,7 +9,10 @@ public class State<T> : IState<T>
     public virtual IList<T> ValidTransitions { get; protected set; }
     public virtual IStateView View { get; }
     public virtual void OnEnter() {}
-    public virtual void OnExit()  {}
+    public virtual void OnExit()  
+    {
+        _Ready = false;
+    }
     public virtual bool OnUpdate() { return _Ready; }
 
     protected bool _Ready;

@@ -28,7 +28,7 @@ public class StateMachine<T> : IStateDirector
         _StateMap[screen].View.SetActive(isActive);
     }
 
-    public void SetCurrentState(T state)
+    public void StateChange(T state)
     {
         if (_CurrentState != null && _StateMap.ContainsKey(_CurrentState))
         {
