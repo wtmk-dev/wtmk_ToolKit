@@ -27,4 +27,10 @@ public class State<T> : IState<T>
     {
 
     }
+
+    protected void Transation(T state)
+    {
+        NextState = state;
+        _Ready = true;
+    }
 }
