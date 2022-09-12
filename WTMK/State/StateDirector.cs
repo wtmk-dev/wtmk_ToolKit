@@ -30,14 +30,19 @@ public class StateDirector : IStateDirector
 
     public void SetCurrentState(string state)
     {
-        if (_CurrentState != null && _StateMap.ContainsKey(_CurrentState))
+        _PreviousState = _CurrentState;
+
+        if (_CurrentState != null && _StateMap.ContainsKey(_PreviousState))
         {
-            _PreviousState = _CurrentState;
             _StateMap[_PreviousState].OnExit();
         }
 
         _CurrentState = state;
-        _StateMap[_CurrentState].OnEnter();
+
+        if (_CurrentState != null && _StateMap.ContainsKey(_CurrentState))
+        {
+            _StateMap[_CurrentState].OnEnter();
+        }
     }
 
     private Dood _Debug = Dood.Instance;
