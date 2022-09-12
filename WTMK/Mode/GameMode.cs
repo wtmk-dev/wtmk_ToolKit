@@ -6,6 +6,10 @@ public class GameMode : State<string>
     public event Action OnModeChange;
     private EventManager _EventManager = EventManager.Instance;
 
+    public GameMode(string tag) : base(tag)
+    {
+    }
+
     protected virtual void RegisterGameScreenEvents()
     {
         _EventManager.RegisterEventCallback(GameScreenEvent.GameSelect.ToString(), OnGameSelect);

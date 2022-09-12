@@ -16,16 +16,16 @@ public class State<T> : IState<T>
     public virtual bool OnUpdate() { return _Ready; }
 
     protected bool _Ready;
-    
+
+    public State(T tag)
+    {
+        Tag = tag;
+    }
+
     public State(T tag, IList<T> validTransitions)
     {
         Tag = tag;
         ValidTransitions = validTransitions;
-    }
-
-    public State()
-    {
-
     }
 
     protected void Transation(T state)
