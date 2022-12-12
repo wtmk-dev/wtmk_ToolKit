@@ -11,6 +11,26 @@ public class StateActionMap<T>
     public Dictionary<T, Update> StateUpdate { get { return _StateUpdate; } }
     public Dictionary<T, Exit> StateExit { get { return _StateExit; } }
 
+    public bool Contains(T type)
+    {
+        if(_StateEnter.ContainsKey(type))
+        {
+            return true;
+        }
+
+        if (_StateUpdate.ContainsKey(type))
+        {
+            return true;
+        }
+
+        if (_StateExit.ContainsKey(type))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     public void DoUpdate()
     {
         if(_StateUpdate.ContainsKey(_CurrentState))

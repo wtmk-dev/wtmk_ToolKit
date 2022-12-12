@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class StateMachine<T> : IStateDirector
 {
-    public State<T> CurrentState { get { return (State<T>)_StateMap[_CurrentState]; } }
+    public IState<T> CurrentState { get { return _StateMap[_CurrentState]; } }
     public bool IsActive { get; set; }
 
     public void OnUpdate()
