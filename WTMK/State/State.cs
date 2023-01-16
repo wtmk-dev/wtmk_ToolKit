@@ -16,7 +16,7 @@ public class State<T> : IState<T>
     public virtual bool OnUpdate() { return _Ready; }
 
     protected bool _Ready;
-
+    protected IStateView _View;
     public State(T tag)
     {
         Tag = tag;
