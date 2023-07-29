@@ -33,4 +33,11 @@ public class State<T> : IState<T>
         NextState = state;
         _Ready = true;
     }
+
+
+    protected void StateChange(T state)
+    {
+        NextState = state;
+        _Ready = true;
+    }
 }
