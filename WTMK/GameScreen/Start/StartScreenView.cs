@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class StartScreenView : MonoBehaviour, IStateView
+public partial class StartScreenView : MonoBehaviour, IStateView
 {
     [SerializeField]
     protected Button _Start;
