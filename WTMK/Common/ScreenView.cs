@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class ScreenView : MonoBehaviour
 {
+    [HideInInspector]
     public bool Transition;
+
+    [HideInInspector]
     public int Track;
 
     public virtual void TransitionIn()
