@@ -4,7 +4,7 @@ public class StateActionMap<T>
     public T CurrentState { get => _CurrentState; }
 
     public delegate void Enter();
-    public delegate void Update();
+    public delegate bool Update();
     public delegate void Exit();
 
     public Dictionary<T, Enter> StateEnter { get { return _StateEnter; } }
@@ -31,12 +31,14 @@ public class StateActionMap<T>
         return false;
     }
 
-    public void DoUpdate()
+    public bool DoUpdate()
     {
         if(_StateUpdate.ContainsKey(_CurrentState))
         {
-            _StateUpdate[_CurrentState]();
+            return _StateUpdate[_CurrentState]();
         }
+
+        return false;
     }
 
     public void Clear()
