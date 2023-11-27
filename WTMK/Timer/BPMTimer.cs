@@ -22,7 +22,7 @@ public class BPMTimer : Timer
 
     private void UpdateInterval(int bpm)
     {
-        _TimerLength = (int)(60000f / _BPM);
+        _TimerLength = (int)(60000f / bpm);
     }
 
     protected int _BPM;
