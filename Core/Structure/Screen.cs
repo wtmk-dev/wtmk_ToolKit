@@ -24,9 +24,8 @@ namespace WTMK.Core
             Toggle(false);
         }
 
-        public virtual void Show(GameData gameData)
+        public virtual void Show()
         {
-            _GameData = gameData;
             Toggle(true);
         }
 
