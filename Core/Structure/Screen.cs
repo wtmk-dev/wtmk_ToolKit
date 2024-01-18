@@ -14,6 +14,11 @@ namespace WTMK.Core
         [SerializeField]
         protected GameObject _Stage;
 
+        public virtual void DoUpdate()
+        {
+
+        }
+
         public virtual void Init()
         {
 
