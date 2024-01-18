@@ -1,21 +1,25 @@
 using System.Collections.Generic;
 
-public sealed class GameData
+namespace WTMK.Core.Data
 {
-    private static readonly GameData _instance = new GameData(); 
-
-    public static GameData Instance
+    public sealed class GameData
     {
-        get
+        private static readonly GameData _instance = new GameData();
+
+        public static GameData Instance
         {
-            return _instance;
+            get
+            {
+                return _instance;
+            }
+        }
+
+        public bool IsNewGame { get; set; }
+
+        private GameData()
+        {
+
         }
     }
 
-    public bool IsNewGame { get; set; }
-
-    private GameData()
-    {
-
-    }
 }

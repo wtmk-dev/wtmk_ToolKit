@@ -4,15 +4,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.UI;
+using WTMK.Core.Data;
 
 namespace WTMK.Core
 {
-    public class Screen : MonoBehaviour
+    public class Screen : MonoBehaviour, IState<GameScreen>
     {
         [SerializeField]
         protected Canvas _UI;
         [SerializeField]
         protected GameObject _Stage;
+
+        public GameScreen Tag { get; protected set; }
+        public GameScreen NextState { get; protected set; }
+        public IList<GameScreen> ValidTransitions { get; protected set; }
+        public IStateView View { get; protected set; }
+        public bool Transition { get; protected set; }
+
 
         public virtual void DoUpdate()
         {
@@ -34,6 +42,21 @@ namespace WTMK.Core
             Toggle(true);
         }
 
+        public virtual void OnEnter()
+        {
+         
+        }
+
+        public virtual void OnExit()
+        {
+         
+        }
+
+        public virtual bool OnUpdate()
+        {            
+            return false;
+        }
+
         protected void Toggle(bool isActive)
         {
             _UI.gameObject.SetActive(isActive);
@@ -50,8 +73,6 @@ namespace WTMK.Core
             yield return new WaitForSeconds(waitTime);
             callBack();
         }
-
-        protected GameData _GameData;
     }
 }
 

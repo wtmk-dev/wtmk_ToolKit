@@ -2,57 +2,61 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-public class Timer : Updatable
+namespace WTMK.Core
 {
-    public virtual event Action OnTimerComplete;
-    public virtual event Action<float> OnTimerTick; //_TimeRemaning
-
-    public virtual bool IsTicking { get; private set; }
-    public virtual float RunTime { get; private set; }
-
-    public virtual void Update()
+    public class Timer : Updateable
     {
-        if(!IsTicking)
+        public virtual event Action OnTimerComplete;
+        public virtual event Action<float> OnTimerTick; //_TimeRemaning
+
+        public virtual bool IsTicking { get; private set; }
+        public virtual float RunTime { get; private set; }
+
+        public virtual void DoUpdate()
         {
-            return;
+            if (!IsTicking)
+            {
+                return;
+            }
+
+            if (_Timer.ElapsedMilliseconds >= _TimerLength)
+            {
+                Stop();
+                OnTimerComplete?.Invoke();
+            }
         }
 
-        if(_Timer.ElapsedMilliseconds >= _TimerLength)
+        public virtual void Start()
         {
-            Stop();
-            OnTimerComplete?.Invoke();
+            IsTicking = true;
+            _Timer.Reset();
+            _Timer.Start();
         }
-    }
 
-    public virtual void Start()
-    {
-        IsTicking = true;
-        _Timer.Reset();
-        _Timer.Start();
-    }
+        public virtual void Start(float lenghtOfTimeInMilli)
+        {
+            _TimerLength = lenghtOfTimeInMilli;
+            IsTicking = true;
+            _Timer.Reset();
+            _Timer.Start();
+        }
 
-    public virtual void Start(float lenghtOfTimeInMilli)
-    {
-        _TimerLength = lenghtOfTimeInMilli;
-        IsTicking = true;
-        _Timer.Reset();
-        _Timer.Start();
-    }
+        public virtual void Stop()
+        {
+            IsTicking = false;
+            _Timer.Stop();
+            RunTime = _Timer.ElapsedMilliseconds;
+        }
 
-    public virtual void Stop()
-    {
-        IsTicking = false;
-        _Timer.Stop();
-        RunTime = _Timer.ElapsedMilliseconds;
-    }
+        protected System.Diagnostics.Stopwatch _Timer;
+        protected float _TimerLength;
 
-    protected System.Diagnostics.Stopwatch _Timer;
-    protected float _TimerLength;
+        public Timer(float lenghtOfTimeInMilli = 0)
+        {
+            _Timer = new System.Diagnostics.Stopwatch();
+            _TimerLength = lenghtOfTimeInMilli;
+        }
 
-    public Timer(float lenghtOfTimeInMilli = 0)
-    {
-        _Timer = new System.Diagnostics.Stopwatch();
-        _TimerLength = lenghtOfTimeInMilli;
     }
 
 }
