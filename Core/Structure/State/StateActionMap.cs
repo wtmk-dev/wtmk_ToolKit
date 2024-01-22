@@ -1,90 +1,94 @@
 using System.Collections.Generic;
-public class StateActionMap<T> 
+
+namespace WTMK.Core
 {
-    public T CurrentState { get => _CurrentState; }
-
-    public delegate void Enter();
-    public delegate bool Update();
-    public delegate void Exit();
-
-    public Dictionary<T, Enter> StateEnter { get { return _StateEnter; } }
-    public Dictionary<T, Update> StateUpdate { get { return _StateUpdate; } }
-    public Dictionary<T, Exit> StateExit { get { return _StateExit; } }
-
-    public bool Contains(T type)
+    public class StateActionMap<T>
     {
-        if(_StateEnter.ContainsKey(type))
+        public T CurrentState { get => _CurrentState; }
+
+        public delegate void Enter();
+        public delegate bool Update();
+        public delegate void Exit();
+
+        public Dictionary<T, Enter> StateEnter { get { return _StateEnter; } }
+        public Dictionary<T, Update> StateUpdate { get { return _StateUpdate; } }
+        public Dictionary<T, Exit> StateExit { get { return _StateExit; } }
+
+        public bool Contains(T type)
         {
-            return true;
+            if (_StateEnter.ContainsKey(type))
+            {
+                return true;
+            }
+
+            if (_StateUpdate.ContainsKey(type))
+            {
+                return true;
+            }
+
+            if (_StateExit.ContainsKey(type))
+            {
+                return true;
+            }
+
+            return false;
         }
 
-        if (_StateUpdate.ContainsKey(type))
+        public bool DoUpdate()
         {
-            return true;
+            if (_StateUpdate.ContainsKey(_CurrentState))
+            {
+                return _StateUpdate[_CurrentState]();
+            }
+
+            return false;
         }
 
-        if (_StateExit.ContainsKey(type))
+        public void Clear()
         {
-            return true;
+            _StateEnter.Clear();
+            _StateUpdate.Clear();
         }
 
-        return false;
-    }
-
-    public bool DoUpdate()
-    {
-        if(_StateUpdate.ContainsKey(_CurrentState))
+        public void RegisterEnter(T state, Enter onEnter)
         {
-            return _StateUpdate[_CurrentState]();
+            _StateEnter.Add(state, onEnter);
         }
 
-        return false;
-    }
-
-    public void Clear()
-    {
-        _StateEnter.Clear();
-        _StateUpdate.Clear();
-    }
-
-    public void RegisterEnter(T state, Enter onEnter)
-    {
-        _StateEnter.Add(state, onEnter);
-    }
-
-    public void RegisterUpdate(T state, Update onUpdate)
-    {
-        _StateUpdate.Add(state, onUpdate);
-    }
-
-    public void RegisterExit(T state, Exit onExit)
-    {
-        _StateExit.Add(state, onExit);
-    }
-
-    public void StateChange(T state)
-    {
-        if(_StateExit.ContainsKey(state))
+        public void RegisterUpdate(T state, Update onUpdate)
         {
-            _StateExit[_CurrentState]();
+            _StateUpdate.Add(state, onUpdate);
         }
-        
-        _CurrentState = state;
 
-        if(_StateEnter.ContainsKey(state))
+        public void RegisterExit(T state, Exit onExit)
         {
-            _StateEnter[_CurrentState]();
+            _StateExit.Add(state, onExit);
         }
-    }
 
-    private Dictionary<T, Enter> _StateEnter = new Dictionary<T, Enter>();
-    private Dictionary<T, Update> _StateUpdate = new Dictionary<T, Update>();
-    private Dictionary<T, Exit> _StateExit = new Dictionary<T, Exit>();
-    private T _CurrentState;
+        public void StateChange(T state)
+        {
+            if (_StateExit.ContainsKey(state))
+            {
+                _StateExit[_CurrentState]();
+            }
 
-    public StateActionMap() { }
-    public StateActionMap(T defaultState)
-    {
-        _CurrentState = defaultState;
+            _CurrentState = state;
+
+            if (_StateEnter.ContainsKey(state))
+            {
+                _StateEnter[_CurrentState]();
+            }
+        }
+
+        private Dictionary<T, Enter> _StateEnter = new Dictionary<T, Enter>();
+        private Dictionary<T, Update> _StateUpdate = new Dictionary<T, Update>();
+        private Dictionary<T, Exit> _StateExit = new Dictionary<T, Exit>();
+        private T _CurrentState;
+
+        public StateActionMap() { }
+        public StateActionMap(T defaultState)
+        {
+            _CurrentState = defaultState;
+        }
     }
 }

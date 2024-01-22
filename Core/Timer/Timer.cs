@@ -12,6 +12,18 @@ namespace WTMK.Core
         public virtual bool IsTicking { get; private set; }
         public virtual float RunTime { get; private set; }
 
+        public virtual void Pause()
+        {
+            IsTicking = false;
+            _Timer.Stop();
+        }
+
+        public virtual void Resume()
+        {
+            IsTicking = true;
+            _Timer.Start();
+        }
+
         public virtual void DoUpdate()
         {
             if (!IsTicking)
