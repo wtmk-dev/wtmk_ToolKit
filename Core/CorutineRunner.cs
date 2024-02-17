@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -13,5 +14,11 @@ public sealed class CorutineRunner : SingeltonMonoBehavior<CorutineRunner>
     public void Stop(IEnumerator routine)
     {
         StopCoroutine(routine);
+    }
+
+    public IEnumerator DelayBeforeCallBack(float waitTime, Action callBack)
+    {
+        yield return new WaitForSeconds(waitTime);
+        callBack();
     }
 }
