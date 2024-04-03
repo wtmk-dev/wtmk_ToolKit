@@ -20,6 +20,7 @@ namespace WTMK.Core
 
         protected bool _Ready;
         protected IStateView _View;
+
         public State(T tag)
         {
             Tag = tag;
@@ -32,12 +33,6 @@ namespace WTMK.Core
         }
 
         protected void Transation(T state)
-        {
-            NextState = state;
-            _Ready = true;
-        }
-
-        protected void StateChange(T state)
         {
             NextState = state;
             _Ready = true;
