@@ -21,4 +21,10 @@ public sealed class CorutineRunner : SingeltonMonoBehavior<CorutineRunner>
         yield return new WaitForSeconds(waitTime);
         callBack();
     }
+
+    public IEnumerator WaitFrameBeforeCallBack(Action callBack)
+    {
+        yield return new WaitForEndOfFrame();
+        callBack();
+    }
 }
