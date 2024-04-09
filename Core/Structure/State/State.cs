@@ -11,11 +11,17 @@ namespace WTMK.Core
         public virtual IList<T> ValidTransitions { get; protected set; }
         public virtual IStateView View { get; }
         public virtual bool Transition { get { return _Ready; } }   
-        public virtual void OnEnter() { }
+
+        public virtual void OnEnter() 
+        {
+            Debug.LogWarning($"On_Enter {Tag}");
+        }
+
         public virtual void OnExit()
         {
             _Ready = false;
         }
+
         public virtual bool OnUpdate() { return _Ready; }
 
         protected bool _Ready;
