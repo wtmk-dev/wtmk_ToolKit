@@ -38,7 +38,7 @@ namespace WTMK.Broadcasting.YouTubeAPI
                     ClientId = clientID,
                     ClientSecret = clientSecret
                 },
-                new[] { "https://www.googleapis.com/auth/youtube", "offline_access" },
+                new[] { "https://www.googleapis.com/auth/youtube" },
                 "user",
                 CancellationToken.None);
 
@@ -84,6 +84,23 @@ namespace WTMK.Broadcasting.YouTubeAPI
             }
         }
 
+        public void UpdateAccessToken(string newAccessToken)
+        {
+            // Create a new YouTubeService instance with the updated access token
+            var newService = new YouTubeService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = new UserCredential(
+                    new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer { }),
+                    "user",
+                    new TokenResponse { AccessToken = newAccessToken }
+                ),
+                ApplicationName = _Service.ApplicationName // Keep the same application name
+            });
+
+            // Replace the existing YouTubeService instance with the new one
+            _Service = newService;
+        }
+
         public static async Task<YouTubeServiceFactory> CreateAsync(TokenSupplier tokenSupplier, string clientID, string clientSecret)
         {
             var accessToken = await tokenSupplier.GetAccessTokenWithRefreshToken(clientID, clientSecret);
@@ -93,9 +110,29 @@ namespace WTMK.Broadcasting.YouTubeAPI
                     new GoogleAuthorizationCodeFlow.Initializer { }),
                     "user",
                     new TokenResponse { AccessToken = accessToken }),
-                ApplicationName = "YourApplicationName"
+                ApplicationName = "After Earth Arcade"
             });
-            return new YouTubeServiceFactory(service);
+
+            
+            var factory = new YouTubeServiceFactory(service);
+
+            
+            Task.Run(async () =>
+            {
+                while (true)
+                {
+                    // Wait for some time before checking again
+                    await Task.Delay(TimeSpan.FromMinutes(30)); // Adjust the interval as needed
+
+                    // Refresh the access token
+                    var newAccessToken = await tokenSupplier.GetAccessTokenWithRefreshToken(clientID, clientSecret);
+
+                    // Update the service with the new access token
+                    factory.UpdateAccessToken(newAccessToken);
+                }
+            });
+
+            return factory;
         }
 
         public YouTubeServiceFactory(YouTubeService service)
@@ -103,8 +140,13 @@ namespace WTMK.Broadcasting.YouTubeAPI
             _Service = service;
         }
 
+        private async void UpdateExpiredService()
+        {
 
-        private readonly YouTubeService _Service;
+        }
+
+
+        private YouTubeService _Service;
     }
 
     public class ChatMessage
@@ -120,7 +162,7 @@ namespace WTMK.Broadcasting.YouTubeAPI
 
         public async Task<List<ChatMessage>> GetNewChatMessages(string liveChatId, string accessToken, string nextPageToken)
         {
-            var request = _Service.LiveChatMessages.List(liveChatId, "snippet");
+            var request = _Factory.Service.LiveChatMessages.List(liveChatId, "snippet");
             request.AccessToken = accessToken;
 
             // Set the page token to retrieve the next page of results
@@ -148,12 +190,12 @@ namespace WTMK.Broadcasting.YouTubeAPI
             return newMessages;
         }
 
-        public LiveChatMonitor(YouTubeService service)
+        public LiveChatMonitor(YouTubeServiceFactory factory)
         {
-            _Service = service;
+            _Factory = factory;
         }
 
         private DateTime _LastMessagePublishedAt = DateTime.MinValue;
-        private readonly YouTubeService _Service;
+        private readonly YouTubeServiceFactory _Factory;
     }
 }
