@@ -74,5 +74,11 @@ namespace WTMK.Core
             callBack();
         }
     }
+
+    public enum GameScreen
+    {
+        Start,
+        Game
+    }
 }
 
