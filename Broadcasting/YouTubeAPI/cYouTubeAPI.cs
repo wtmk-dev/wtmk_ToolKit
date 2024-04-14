@@ -13,27 +13,19 @@ using System.Linq;
 
 namespace WTMK.Broadcasting.YouTubeAPI
 {
-    public class YouTubeServiceFactory
+    public class TokenSupplier
     {
-        public YouTubeService Service
-        {
-            get
-            {
-                return _Service;
-            }
-        }
-
         public async Task<string> GetAccessToken(string clientID, string clientSecret)
         {
             var credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
-            new ClientSecrets
-            {
-                ClientId = clientID,
-                ClientSecret = clientSecret
-            },
-            new[] { "https://www.googleapis.com/auth/youtube" },
-            "user",
-            CancellationToken.None);
+                new ClientSecrets
+                {
+                    ClientId = clientID,
+                    ClientSecret = clientSecret
+                },
+                new[] { "https://www.googleapis.com/auth/youtube" },
+                "user",
+                CancellationToken.None);
 
             return credential.Token.AccessToken;
         }
@@ -41,14 +33,14 @@ namespace WTMK.Broadcasting.YouTubeAPI
         public async Task<string> GetAccessTokenWithRefreshToken(string clientID, string clientSecret)
         {
             var credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
-            new ClientSecrets
-            {
-                ClientId = clientID,
-                ClientSecret = clientSecret
-            },
-            new[] { "https://www.googleapis.com/auth/youtube", "offline_access" }, // Add the "offline_access" scope to get refresh
-            "user",
-            CancellationToken.None);
+                new ClientSecrets
+                {
+                    ClientId = clientID,
+                    ClientSecret = clientSecret
+                },
+                new[] { "https://www.googleapis.com/auth/youtube", "offline_access" },
+                "user",
+                CancellationToken.None);
 
             return credential.Token.AccessToken;
         }
@@ -71,34 +63,46 @@ namespace WTMK.Broadcasting.YouTubeAPI
 
             var credential = new UserCredential(flow, "user", token);
 
-            // Attempt to refresh the token
             if (await credential.RefreshTokenAsync(CancellationToken.None))
             {
-                // Access token refreshed successfully, return the new access token
                 return credential.Token.AccessToken;
             }
             else
             {
-                // Token refresh failed, handle the error
                 return "Failed to refresh access token.";
             }
         }
+    }
 
-        public YouTubeServiceFactory(string clientID, string clientSecret)
+    public class YouTubeServiceFactory
+    {
+        public YouTubeService Service
         {
-            var token = GetAccessTokenWithRefreshToken(clientID, clientSecret);
-            _Service = new YouTubeService(new BaseClientService.Initializer
+            get
+            {
+                return _Service;
+            }
+        }
+
+        public static async Task<YouTubeServiceFactory> CreateAsync(TokenSupplier tokenSupplier, string clientID, string clientSecret)
+        {
+            var accessToken = await tokenSupplier.GetAccessTokenWithRefreshToken(clientID, clientSecret);
+            var service = new YouTubeService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = new UserCredential(new GoogleAuthorizationCodeFlow(
-                new GoogleAuthorizationCodeFlow.Initializer
-                {
-                    
-                }),
-                "user",
-                new TokenResponse { AccessToken = token }
+                    new GoogleAuthorizationCodeFlow.Initializer { }),
+                    "user",
+                    new TokenResponse { AccessToken = accessToken }),
                 ApplicationName = "YourApplicationName"
             });
+            return new YouTubeServiceFactory(service);
         }
+
+        public YouTubeServiceFactory(YouTubeService service)
+        {
+            _Service = service;
+        }
+
 
         private readonly YouTubeService _Service;
     }
