@@ -6,16 +6,45 @@ using Google.Apis.YouTube.v3;
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
+using s = System.Threading.Tasks;
 using UnityEditor.PackageManager;
 using System.Net.Http;
 using System.Linq;
+using Unity.VisualScripting;
+
 
 namespace WTMK.Broadcasting.YouTubeAPI
 {
     public class TokenSupplier
     {
-        public async Task<string> GetAccessToken(string clientID, string clientSecret)
+        public string AccessToken
+        {
+            get; private set;
+        }
+
+        public string ClientId
+        {
+            get; private set;
+        }
+
+        public string ClientSecret
+        {
+            get; private set;
+        }
+
+        public string NextPageToken
+        {
+            get; set;
+        }
+
+        public void Set(string clientID, string clientSecret, string accessToken)
+        {
+            ClientId = clientID;
+            ClientSecret = clientSecret;
+            AccessToken = accessToken;
+        }
+
+        public async s.Task<string> GetAccessToken(string clientID, string clientSecret)
         {
             var credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
                 new ClientSecrets
@@ -30,7 +59,7 @@ namespace WTMK.Broadcasting.YouTubeAPI
             return credential.Token.AccessToken;
         }
 
-        public async Task<string> GetAccessTokenWithRefreshToken(string clientID, string clientSecret)
+        public async s.Task<string> GetAccessTokenWithRefreshToken(string clientID, string clientSecret)
         {
             var credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
                 new ClientSecrets
@@ -45,7 +74,7 @@ namespace WTMK.Broadcasting.YouTubeAPI
             return credential.Token.AccessToken;
         }
 
-        public async Task<string> GetAccessTokenFromRefreshToken(string clientID, string clientSecret, string refreshToken)
+        public async s.Task<string> GetAccessTokenFromRefreshToken(string clientID, string clientSecret, string refreshToken)
         {
             var clientSecrets = new ClientSecrets
             {
@@ -101,38 +130,29 @@ namespace WTMK.Broadcasting.YouTubeAPI
             _Service = newService;
         }
 
-        public static async Task<YouTubeServiceFactory> CreateAsync(TokenSupplier tokenSupplier, string clientID, string clientSecret)
+        public static async s.Task<YouTubeServiceFactory> CreateAsync(TokenSupplier tokenSupplier, string clientID, string clientSecret)
         {
             var accessToken = await tokenSupplier.GetAccessTokenWithRefreshToken(clientID, clientSecret);
+
+            var initializer = new GoogleAuthorizationCodeFlow.Initializer
+            {
+                ClientSecrets = new ClientSecrets
+                {
+                    ClientId = clientID,
+                    ClientSecret = clientSecret
+                }
+            };
+
+            var flow = new GoogleAuthorizationCodeFlow(initializer);
+
             var service = new YouTubeService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = new UserCredential(new GoogleAuthorizationCodeFlow(
-                    new GoogleAuthorizationCodeFlow.Initializer { }),
-                    "user",
-                    new TokenResponse { AccessToken = accessToken }),
+                HttpClientInitializer = new UserCredential(flow, "user", new TokenResponse { AccessToken = accessToken }),
                 ApplicationName = "After Earth Arcade"
             });
 
-            
-            var factory = new YouTubeServiceFactory(service);
-
-            
-            Task.Run(async () =>
-            {
-                while (true)
-                {
-                    // Wait for some time before checking again
-                    await Task.Delay(TimeSpan.FromMinutes(30)); // Adjust the interval as needed
-
-                    // Refresh the access token
-                    var newAccessToken = await tokenSupplier.GetAccessTokenWithRefreshToken(clientID, clientSecret);
-
-                    // Update the service with the new access token
-                    factory.UpdateAccessToken(newAccessToken);
-                }
-            });
-
-            return factory;
+            tokenSupplier.Set(clientID, clientSecret, accessToken);
+            return new YouTubeServiceFactory(service);
         }
 
         public YouTubeServiceFactory(YouTubeService service)
@@ -142,10 +162,9 @@ namespace WTMK.Broadcasting.YouTubeAPI
 
         private async void UpdateExpiredService()
         {
-
+            //TO::DO Update serice
         }
-
-
+        
         private YouTubeService _Service;
     }
 
@@ -160,13 +179,36 @@ namespace WTMK.Broadcasting.YouTubeAPI
     {
         public event Action<List<ChatMessage>> OnMessagesReceived;
 
-        public async Task<List<ChatMessage>> GetNewChatMessages(string liveChatId, string accessToken, string nextPageToken)
+        public async s.Task<string> GetLiveChatIdsForChannel()
         {
-            var request = _Factory.Service.LiveChatMessages.List(liveChatId, "snippet");
-            request.AccessToken = accessToken;
+            var liveBroadcastRequest = _Factory.Service.LiveBroadcasts.List("id,snippt");
+            liveBroadcastRequest.BroadcastStatus = LiveBroadcastsResource.ListRequest.BroadcastStatusEnum.Active;
+            liveBroadcastRequest.BroadcastType = LiveBroadcastsResource.ListRequest.BroadcastTypeEnum.All;
+            liveBroadcastRequest.Mine = true;
+
+            var liveBroadcastResponse = await liveBroadcastRequest.ExecuteAsync();
+            var liveChatIds = new List<string>();
+
+            foreach (var liveBroadcast in liveBroadcastResponse.Items)
+            {
+                liveChatIds.Add(liveBroadcast.Snippet.LiveChatId);
+            }
+
+            return liveChatIds[0];
+        }
+
+        public async s.Task<List<ChatMessage>> GetNewChatMessages()
+        {
+            if(_LiveChatId == "")
+            {
+                _LiveChatId = await GetLiveChatIdsForChannel();
+            }
+
+            var request = _Factory.Service.LiveChatMessages.List(_LiveChatId, "snippet");
+            request.AccessToken = _TokenSupplier.AccessToken;
 
             // Set the page token to retrieve the next page of results
-            request.PageToken = nextPageToken;
+            request.PageToken = _TokenSupplier.NextPageToken;
 
             var response = await request.ExecuteAsync();
             var newMessages = response.Items
@@ -185,17 +227,23 @@ namespace WTMK.Broadcasting.YouTubeAPI
                 _LastMessagePublishedAt = newMessages.Max(message => message.PublishedAt);
             }
 
+            _TokenSupplier.NextPageToken = response.NextPageToken;
+
             OnMessagesReceived?.Invoke(newMessages);
 
             return newMessages;
         }
 
-        public LiveChatMonitor(YouTubeServiceFactory factory)
+        public LiveChatMonitor(YouTubeServiceFactory factory, TokenSupplier supplier)
         {
             _Factory = factory;
+            _TokenSupplier = supplier;
         }
 
         private DateTime _LastMessagePublishedAt = DateTime.MinValue;
         private readonly YouTubeServiceFactory _Factory;
+        private readonly TokenSupplier _TokenSupplier;
+        private string _LiveChatId = "";
     }
+
 }
