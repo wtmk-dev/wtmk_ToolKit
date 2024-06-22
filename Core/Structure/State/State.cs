@@ -22,7 +22,15 @@ namespace WTMK.Core
             _Ready = false;
         }
 
-        public virtual bool OnUpdate() { return _Ready; }
+        public virtual bool OnUpdate() 
+        { 
+            return _Ready; 
+        }
+
+        public virtual void OnFixedUpdate()
+        {
+
+        }
 
         protected bool _Ready;
         protected IStateView _View;
